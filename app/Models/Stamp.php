@@ -15,7 +15,7 @@ class Stamp extends Model
         'employee_id'
     ];
 
-    public function employees(){
-        return $this->belongsToMany(Employee::class);
+    public function employee(){
+        return $this->belongsTo(Employee::class);
     }
 }

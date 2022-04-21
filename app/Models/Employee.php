@@ -14,7 +14,7 @@ class Employee extends Model
         'last_name'
     ];
 
-    public function stamp(){
-        return $this->belongsTo(Stamp::class);
+    public function stamps(){
+        return $this->hasMany(Stamp::class);
     }
 }
