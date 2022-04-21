@@ -3210,6 +3210,26 @@ function withinMaxClamp(min, value, max) {
 
 __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.esm.js");
 
+function getMinutesBetweenDates(startDate, endDate) {
+  var hours, minutes, diff;
+
+  function sliceHours(params) {
+    return Number(params.slice(0, 2));
+  }
+
+  function sliceMinetus(params) {
+    return Number(params.slice(3, -3));
+  }
+
+  console.log(sliceMinetus(startDate), 'test');
+  diffHours = 24 - sliceHours(startDate) + sliceHours(endDate);
+  diffMin = sliceMinetus(startDate) - sliceMinetus(endDate);
+  diff = sliceMinetus(startDate) < sliceMinetus(endDate) ? diffHours - 1 && 60 + (sliceMinetus(startDate) - sliceMinetus(endDate)) : diffMin;
+  return "".concat(diffHours, ":").concat(diff);
+}
+
+console.log(getMinutesBetweenDates('20:24:00', '06:05:00'));
+
 /***/ }),
 
 /***/ "./node_modules/bootstrap/dist/js/bootstrap.esm.js":

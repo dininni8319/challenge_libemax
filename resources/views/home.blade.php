@@ -1,4 +1,5 @@
 <x-layout>
+   
     <div class="container-fluid  custom-container-style">
         <div class="row ">
             <div class="col-12 col-md-6 offset-md-3">
@@ -51,17 +52,33 @@
                     </tr>
                 </thead>
                 <tbody>
+                    
                     @foreach ($stamps as $stamp)
                         <tr>
-                           <td>{{$stamp->employee->first_name}}, {{$stamp->employee->last_name}}</td>
-                           <td></td>
-                        
-                           {{-- @dd($stamp->employee->first_name) --}}
+                            <td>{{$stamp->employee->first_name}}, {{$stamp->employee->last_name}} </td>  
+                    
+                                @foreach ($employeesEnter as $employeeEnter)
+                                    @if ($stamp->employee->id == $employeeEnter->employee->id)
+                                            
+                                        <td>{{$employeeEnter->dataora}}</td>     
+                                    @endif
+                                @endforeach
+                                @foreach ($employeesExit as $employeeExit)                                
+                                    @if ($stamp->employee->id == $employeeExit->employee->id)
+                                            
+                                        <td>{{($employeeExit->dataora)}}</td>
+                                        <td></td>
+                                        {{-- <td>{{strtotime($employeeExit->dataora)}}</td>      --}}
+                                    @endif
+                                @endforeach
+                                
                         </tr>
                     @endforeach
+                            
                     
                 </tbody>
             </table>
         </div>
     </div>
+   
 </x-layout>
