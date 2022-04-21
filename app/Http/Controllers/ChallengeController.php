@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Stamp;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class ChallengeController extends Controller
 {
     public function index(){
-        return view('home');
+        $employees = Employee::all();
+        $stamps = Stamp::all();
+        return view('home', compact('employees', 'stamps'));
     }
 
     public function createEmployee(Request $request){
@@ -17,6 +20,7 @@ class ChallengeController extends Controller
             'last_name' => $request->input('last_name'),
         ]);
 
+        
         return redirect(route('homepage', compact('employee')));
 
     }
