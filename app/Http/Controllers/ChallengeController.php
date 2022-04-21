@@ -12,9 +12,12 @@ class ChallengeController extends Controller
     }
 
     public function createEmployee(Request $request){
-        Employee::create([
+        $employee = Employee::create([
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
         ]);
+
+        return redirect(route('homepage', compact('employee')));
+
     }
 }
