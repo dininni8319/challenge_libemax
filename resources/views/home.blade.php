@@ -70,11 +70,34 @@
                                         <td></td>
                                         {{-- <td>{{strtotime($employeeExit->dataora)}}</td>      --}}
                                     @endif
+                                @endforeach 
+                                @foreach ($array2 as $item)
+                                    <td>{{$item}}</td>
                                 @endforeach
-                                
                         </tr>
                     @endforeach
-                            
+                    
+                </tbody>
+            </table>
+
+            <table class="display shadow mt-5">
+                <thead>
+                    <tr>
+                        <th>December 2020</th>
+                        <th>01 mar</th>
+                        <th>02 mer</th>
+                        <th>03 gio</th>
+                        <th>04 ven</th>
+                        <th>tot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    @foreach ($stamps as $stamp)
+                        <tr>
+                            <td>{{$stamp->employee->first_name}}, {{$stamp->employee->last_name}}</td>  
+                        </tr>
+                    @endforeach
                     
                 </tbody>
             </table>
