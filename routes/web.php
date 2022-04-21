@@ -15,3 +15,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [ChallengeController::class, 'index'])->name('homepage');
+Route::post('/create', [ChallengeController::class, 'createEmployee'])->name('newEmployee');
