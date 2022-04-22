@@ -11,40 +11,60 @@ class ChallengeController extends Controller
     public function index(){
         
         $employees = Employee::all();
-        $employeesEnter = Stamp::where('verso','E')->get();
-        $employeesExit = Stamp::where('verso', 'U')->get();
-  
-        function sliceMin($time){
-            foreach ($time as $value) {
-              intval(substr($value->dataora, -2,8)); 
+        $employeesEnter = Stamp::where('verso','E')->orderBy('employee_id', 'ASC')->get();
+        $employeesExit = Stamp::where('verso', 'U')->orderBy('employee_id', 'ASC')->get();
+
+        function sliceMin($times){
+            $arr = [];
+            foreach ($times as $time) {
+              array_push($arr, intval(substr($time->dataora, -5,2)));
+               
             }
+            // dd($arr);
+            return $arr;
         }
 
-        function sliceHours($time){
-            foreach ($time as $value) {
-              intval(substr($value->dataora, 10,3)); 
-            }
-        }
-
-        function sliceDate($time){
-            foreach ($time as $value) {
-              substr($value->dataora, 2,4); 
-            }
-        }
+        function sliceHours($times){
         
-        $date = sliceDate($employeesExit);
+            $arr = [];
+            foreach ($times as $time) {
+            array_push($arr,intval(substr($time->dataora, 10,3)));
+            }
+            return $arr;
+        }
 
-        $diffHours = (24 + (sliceHours($employeesEnter) - sliceHours($employeesExit)));
-        $diffMin = sliceMin($employeesEnter) - sliceMin($employeesExit);
-        $diff = sliceMin($employeesEnter) < sliceMin($employeesExit) ? $diffHours - 1 && (60 + (sliceMin($employeesEnter) - sliceMin($employeesExit))) : $diffMin;
-        $diffTime = "$diffHours:$diff";
-        $array2 = [];
-        array_push($array2, $diffTime);
+        function sliceDate($times){
+            $arr = [];
+            foreach ($times as $time) {
+                array_push($arr, intval(substr($time->dataora, 2,4))); 
+            }
+            return $arr;
+        }
+ 
+        function diffHours($diffH1, $diffH2){
+            $diffHours = [];
+            for ($i= 0; $i < sizeof($diffH1); $i++) { 
+                array_push($diffHours, (24 - $diffH1[$i]) + $diffH2[$i]);
+            }
+            return $diffHours;
+        }
+
+        function diffMin($diffM1, $diffM2){
+            $diffArrMin = [];
+            for ($i= 0; $i < sizeof($diffM1); $i++) {
+
+                array_push($diffArrMin,  $diffM1[$i] + $diffM2[$i]);
+            }
+            return $diffArrMin;
+        }
+
+        $diffTimehour = diffHours(sliceHours($employeesEnter),sliceHours($employeesExit));
+        
+        $diffM = diffMin(sliceMin($employeesEnter), sliceMin($employeesExit));
         
         $stamps = Stamp::all();
-     
 
-        return view('home', compact('employees', 'employeesEnter', 'employeesExit', 'stamps', 'array2'));
+        return view('home', compact('employees', 'employeesEnter', 'employeesExit', 'stamps', 'diffTimehour', 'diffM'));
     }
 
     public function createEmployee(Request $request){

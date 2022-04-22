@@ -71,11 +71,11 @@
                                         {{-- <td>{{strtotime($employeeExit->dataora)}}</td>      --}}
                                     @endif
                                 @endforeach 
-                                @foreach ($array2 as $item)
-                                    <td>{{$item}}</td>
-                                @endforeach
-                        </tr>
-                    @endforeach
+                            </tr>
+                            @endforeach
+                            @foreach ($diffTimehour as $item)
+                                <td>{{$item}}</td>
+                            @endforeach
                     
                 </tbody>
             </table>
