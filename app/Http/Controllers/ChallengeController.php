@@ -17,7 +17,6 @@ class ChallengeController extends Controller
         $employeesExit = Stamp::where('verso', 'U')->orderBy('employee_id', 'DESC')->get();
         $stamps = Stamp::orderBy('employee_id', 'asc')->get();
 
-        // date ---> 2, 4
         //helper function to find minutes, hours, or dates
         function sliceTime($times, $x,$y){
             $arr = [];
@@ -25,6 +24,23 @@ class ChallengeController extends Controller
                 array_push($arr, intval(substr($time->dataora, $x,$y))); 
             }
             return $arr;
+        }
+        
+        function diffDaylyTime($time, $x){
+            $diffArr = array();
+            for ($i= 0; $i < sizeof($time); $i++) {
+                
+                if ($x) {
+                    $t = $x - $time[$i];
+                    
+                    array_push($diffArr, $t);
+                }  else {
+                    $t = $time[$i];
+                   
+                    array_push($diffArr, $t);
+                }
+            }
+            return $diffArr;
         }
 
         // helper function to calc the differece between to minutes and hours
@@ -41,12 +57,11 @@ class ChallengeController extends Controller
             }
             return $diffArr;
         }
-
-        $diffTimeHours = diffTime(sliceTime($employeesEnter, 10, 3),sliceTime($employeesExit, 10, 3), 24);
+  
+        $diffTimeHours = diffTime(sliceTime($employeesEnter, 10, 3), sliceTime($employeesExit, 10, 3), 24);
         
         $diffTimeMinutes = diffTime(sliceTime($employeesEnter, -5, 2), sliceTime($employeesExit, -5, 2), 0);
-        
-        //create a collection with total hours
+
         for ($i = 0; $i < sizeof($diffTimeHours); $i++) { 
                 $collection = collect();
                 $stringTimeH = $diffTimeHours[$i] < 10 ? '0' . strval($diffTimeHours[$i])  . ':' : strval($diffTimeHours[$i])  . ':';
@@ -60,6 +75,41 @@ class ChallengeController extends Controller
                     Stamp::where('employee_id', $value)->update(['total_time' => $key]);
                 }
         }
+        
+        $dateEnterH = diffDaylyTime(sliceTime($employeesEnter, 10, 3), 24);
+        $dateExitH = diffDaylyTime(sliceTime($employeesExit, 10, 3), 0);
+        $dateEnterM = diffDaylyTime(sliceTime($employeesEnter, -5, 2), 60);
+        $dateExitM = diffDaylyTime(sliceTime($employeesExit, -5, 2), 0);
+
+        function calcDailyHours($time, $h, $m){
+            
+            $collection = collect();
+            
+            for ($i = 0; $i < sizeof($time); $i++) { 
+                $stringTimeH = $h[$i] < 10 ? '0' . strval($h[$i])  . ':' : strval($h[$i])  . ':';
+                $stringTimeM =  $m[$i] < 10 ? '0' . strval($m[$i]) : strval($m[$i]);
+                $stringTime = $stringTimeH . $stringTimeM;
+                $collection = $collection->merge([$stringTime => ($i + 1)]);
+            }
+        
+            return $collection;
+        }
+        
+        $enterDate = calcDailyHours($dateEnterH, $dateEnterH, $dateEnterM);
+        $exitDate = calcDailyHours($dateExitH, $dateExitH, $dateExitM);
+        
+        if ($enterDate) {
+            foreach ($enterDate as $key => $value) {    
+                Stamp::where('employee_id', $value)->update(['Thursday' => $key]);
+            }
+        }
+        
+        if ($exitDate) {
+            foreach ($exitDate as $key => $value) {    
+                Stamp::where('employee_id', $value)->update(['Friday' => $key]);
+            }
+        }
+        //create a collection with total hours
         //Here we are looking for unique user in the stamp model and put them into an array.
         $uniqueUserStamp = array();
 
@@ -70,8 +120,6 @@ class ChallengeController extends Controller
         $uniqueUserStamp = array_unique($uniqueUserStamp);
 
         //Here we are going to store the employees daily worked hours
-        
-        
         return view('home', compact('employees', 'employeesEnter', 'employeesExit', 'stamps', 'diffTimeHours', 'diffTimeMinutes','uniqueUserStamp'));
     }
 

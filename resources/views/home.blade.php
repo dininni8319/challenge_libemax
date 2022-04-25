@@ -52,13 +52,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @for ($i = 1; $i < sizeof($uniqueUserStamp); $i++)
-                        <tr>
-
-                            <td>{{$uniqueUserStamp[$i]['first_name']}} </td>
-                        </tr>
-                          
-                    @endfor --}}
 
                     @foreach ($uniqueUserStamp as $value)
                         <tr>
@@ -107,6 +100,14 @@
                         <tr>
                             <td>{{($value->first_name)}}, {{$value->last_name}}</td>
 
+                            @foreach ($employeesEnter as $employeeEnter)    
+                                @if ($value->id == $employeeEnter->employee->id)
+                                    <td>{{$employeeEnter->Tuesday == null ? "0" : $employeeEnter->Tuesday}}</td>
+                                    <td>{{$employeeEnter->Wedneday == null ? "0" : $employeeEnter->Wedneday}}</td>
+                                    <td>{{$employeeEnter->Thursday == null ? "0" : $employeeEnter->Thursday}}</td>
+                                    <td>{{$employeeEnter->Friday == null ? "0" : $employeeEnter->Friday}}</td>
+                                @endif
+                            @endforeach
                             @foreach ($employeesEnter as $employeeEnter)    
                                 @if ($value->id == $employeeEnter->employee->id)
                                 
