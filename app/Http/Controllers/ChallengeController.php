@@ -3,68 +3,69 @@
 namespace App\Http\Controllers;
 
 use App\Models\Stamp;
+use Mockery\Undefined;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ChallengeController extends Controller
 {
     public function index(){
         
         $employees = Employee::all();
-        $employeesEnter = Stamp::where('verso','E')->orderBy('employee_id', 'ASC')->get();
-        $employeesExit = Stamp::where('verso', 'U')->orderBy('employee_id', 'ASC')->get();
+        $employeesEnter = Stamp::where('verso','E')->orderBy('employee_id', 'DESC')->get();
+        $employeesExit = Stamp::where('verso', 'U')->orderBy('employee_id', 'DESC')->get();
+        $stamps = Stamp::orderBy('employee_id', 'asc')->get();
 
-        function sliceMin($times){
+        // date ---> 2, 4
+        //helper function to find minutes, hours, or dates
+        function sliceTime($times, $x,$y){
             $arr = [];
             foreach ($times as $time) {
-              array_push($arr, intval(substr($time->dataora, -5,2)));
-               
-            }
-            // dd($arr);
-            return $arr;
-        }
-
-        function sliceHours($times){
-        
-            $arr = [];
-            foreach ($times as $time) {
-            array_push($arr,intval(substr($time->dataora, 10,3)));
+                array_push($arr, intval(substr($time->dataora, $x,$y))); 
             }
             return $arr;
         }
 
-        function sliceDate($times){
-            $arr = [];
-            foreach ($times as $time) {
-                array_push($arr, intval(substr($time->dataora, 2,4))); 
-            }
-            return $arr;
-        }
- 
-        function diffHours($diffH1, $diffH2){
-            $diffHours = [];
-            for ($i= 0; $i < sizeof($diffH1); $i++) { 
-                array_push($diffHours, (24 - $diffH1[$i]) + $diffH2[$i]);
-            }
-            return $diffHours;
-        }
+        // helper function to calc the differece between to minutes and hours
+        function diffTime($diffTime1, $diffTime2, $h24){
 
-        function diffMin($diffM1, $diffM2){
-            $diffArrMin = [];
-            for ($i= 0; $i < sizeof($diffM1); $i++) {
+            $diffArr = [];
 
-                array_push($diffArrMin,  $diffM1[$i] + $diffM2[$i]);
+            for ($i= 0; $i < sizeof($diffTime1); $i++) {
+                if ($h24) {
+                    array_push($diffArr, (24 - ($diffTime1[$i]) + $diffTime2[$i]));  
+                } else {
+                    array_push($diffArr,  $diffTime1[$i] + $diffTime2[$i]);
+                }
             }
-            return $diffArrMin;
+            return $diffArr;
         }
 
-        $diffTimehour = diffHours(sliceHours($employeesEnter),sliceHours($employeesExit));
+        $diffTimeHours = diffTime(sliceTime($employeesEnter, 10, 3),sliceTime($employeesExit, 10, 3), 24);
         
-        $diffM = diffMin(sliceMin($employeesEnter), sliceMin($employeesExit));
+        $diffTimeMinutes = diffTime(sliceTime($employeesEnter, -5, 2), sliceTime($employeesExit, -5, 2), 0);
         
-        $stamps = Stamp::all();
+        
+        for ($i = 0; $i < sizeof($diffTimeHours); $i++) { 
+                $collection = collect();
+                $stringTimeH = $diffTimeHours[$i] < 10 ? '0' . strval($diffTimeHours[$i])  . ':' : strval($diffTimeHours[$i])  . ':';
+                $stringTimeM =  $diffTimeMinutes[$i] < 10 ? '0' . strval($diffTimeMinutes[$i]) : strval($diffTimeMinutes[$i]);
+                $stringTime = $stringTimeH . $stringTimeM;
+                $merged = $collection->merge([$stringTime => ($i +1)]);
+                dump($merged);
+                // DB::table('stamps')->where('employee_id', '=', 'id')->update($merged);
+        }
+        //Here we are looking for unique user in the stamp model and put them into an array.
+        $uniqueUserStamp = array();
 
-        return view('home', compact('employees', 'employeesEnter', 'employeesExit', 'stamps', 'diffTimehour', 'diffM'));
+        foreach ($stamps as $stamp) {
+            array_push($uniqueUserStamp, $stamp->employee);
+        }
+
+        $uniqueUserStamp = array_unique($uniqueUserStamp);
+        
+        return view('home', compact('employees', 'employeesEnter', 'employeesExit', 'stamps', 'diffTimeHours', 'diffTimeMinutes','uniqueUserStamp'));
     }
 
     public function createEmployee(Request $request){

@@ -52,30 +52,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
-                    @foreach ($stamps as $stamp)
+
+                    @foreach ($uniqueUserStamp as $value)
                         <tr>
-                            <td>{{$stamp->employee->first_name}}, {{$stamp->employee->last_name}} </td>  
+                            <td>{{($value->first_name)}}, {{$value->last_name}} </td>
                     
                                 @foreach ($employeesEnter as $employeeEnter)
-                                    @if ($stamp->employee->id == $employeeEnter->employee->id)
+                                    @if ($value->id == $employeeEnter->employee->id)
                                             
                                         <td>{{$employeeEnter->dataora}}</td>     
                                     @endif
                                 @endforeach
+
                                 @foreach ($employeesExit as $employeeExit)                                
-                                    @if ($stamp->employee->id == $employeeExit->employee->id)
+                                    @if ($value->id == $employeeExit->employee->id)
                                             
                                         <td>{{($employeeExit->dataora)}}</td>
-                                        <td></td>
-                                        {{-- <td>{{strtotime($employeeExit->dataora)}}</td>      --}}
+
                                     @endif
-                                @endforeach 
-                            </tr>
-                            @endforeach
-                            @foreach ($diffTimehour as $item)
-                                <td>{{$item}}</td>
-                            @endforeach
+                                @endforeach
+
+                        </tr>
+                    @endforeach 
                     
                 </tbody>
             </table>
@@ -93,9 +91,9 @@
                 </thead>
                 <tbody>
                     
-                    @foreach ($stamps as $stamp)
+                    @foreach ($uniqueUserStamp as $value)
                         <tr>
-                            <td>{{$stamp->employee->first_name}}, {{$stamp->employee->last_name}}</td>  
+                            <td>{{($value->first_name)}}, {{$value->last_name}} </td>
                         </tr>
                     @endforeach
                     
