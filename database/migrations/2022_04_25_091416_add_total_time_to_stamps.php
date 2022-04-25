@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::table('stamps', function (Blueprint $table) {
             $table->string('total_time')->nullable();
+            $table->timestamps();
         });
     }
 

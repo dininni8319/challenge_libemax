@@ -68,10 +68,15 @@
                                     @if ($value->id == $employeeExit->employee->id)
                                             
                                         <td>{{($employeeExit->dataora)}}</td>
-
                                     @endif
                                 @endforeach
-
+                                @foreach ($employeesEnter as $employeeEnter)    
+                                                          
+                                    @if ($value->id == $employeeExit->employee->id)
+                                         
+                                        <td>{{$employeeEnter->total_time ."\n"}}</td>
+                                    @endif
+                                @endforeach
                         </tr>
                     @endforeach 
                     

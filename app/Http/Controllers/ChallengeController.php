@@ -52,9 +52,13 @@ class ChallengeController extends Controller
                 $stringTimeH = $diffTimeHours[$i] < 10 ? '0' . strval($diffTimeHours[$i])  . ':' : strval($diffTimeHours[$i])  . ':';
                 $stringTimeM =  $diffTimeMinutes[$i] < 10 ? '0' . strval($diffTimeMinutes[$i]) : strval($diffTimeMinutes[$i]);
                 $stringTime = $stringTimeH . $stringTimeM;
-                $merged = $collection->merge([$stringTime => ($i +1)]);
-                dump($merged);
-                // DB::table('stamps')->where('employee_id', '=', 'id')->update($merged);
+                $merged = $collection->merge([$stringTime => ($i + 1)]);
+                $employeeId = $employeesEnter[$i]['employee_id'];
+                
+                //save the total time into the DB
+                foreach ($merged as $key => $value) {    
+                    Stamp::where('employee_id', $value)->update(['total_time' => $key]);
+                }
         }
         //Here we are looking for unique user in the stamp model and put them into an array.
         $uniqueUserStamp = array();
