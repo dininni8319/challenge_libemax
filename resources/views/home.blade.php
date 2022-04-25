@@ -52,31 +52,38 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {{-- @for ($i = 1; $i < sizeof($uniqueUserStamp); $i++)
+                        <tr>
+
+                            <td>{{$uniqueUserStamp[$i]['first_name']}} </td>
+                        </tr>
+                          
+                    @endfor --}}
 
                     @foreach ($uniqueUserStamp as $value)
                         <tr>
                             <td>{{($value->first_name)}}, {{$value->last_name}} </td>
                     
-                                @foreach ($employeesEnter as $employeeEnter)
-                                    @if ($value->id == $employeeEnter->employee->id)
-                                            
-                                        <td>{{$employeeEnter->dataora}}</td>     
-                                    @endif
-                                @endforeach
+                            @foreach ($employeesEnter as $employeeEnter)
+                                @if ($value->id == $employeeEnter->employee->id)
+                                        
+                                    <td>{{$employeeEnter->dataora}}</td>     
+                                @endif
+                            @endforeach
 
-                                @foreach ($employeesExit as $employeeExit)                                
-                                    @if ($value->id == $employeeExit->employee->id)
-                                            
-                                        <td>{{($employeeExit->dataora)}}</td>
-                                    @endif
-                                @endforeach
-                                @foreach ($employeesEnter as $employeeEnter)    
-                                                          
-                                    @if ($value->id == $employeeExit->employee->id)
-                                         
-                                        <td>{{$employeeEnter->total_time ."\n"}}</td>
-                                    @endif
-                                @endforeach
+                            @foreach ($employeesExit as $employeeExit)                                
+                                @if ($value->id == $employeeExit->employee->id)
+                                        
+                                    <td>{{($employeeExit->dataora)}}</td>
+                                @endif
+                            @endforeach
+                            @foreach ($employeesEnter as $employeeEnter)    
+                                                    
+                                @if ($value->id == $employeeEnter->employee->id)
+                                    
+                                    <td>{{$employeeEnter->total_time ."\n"}}</td>
+                                @endif
+                            @endforeach
                         </tr>
                     @endforeach 
                     
@@ -94,15 +101,24 @@
                         <th>tot</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    
                     @foreach ($uniqueUserStamp as $value)
                         <tr>
-                            <td>{{($value->first_name)}}, {{$value->last_name}} </td>
+                            <td>{{($value->first_name)}}, {{$value->last_name}}</td>
+
+                            @foreach ($employeesEnter as $employeeEnter)    
+                                @if ($value->id == $employeeEnter->employee->id)
+                                
+                                    <td>{{$employeeEnter->total_time ."\n"}}</td>
+                                @endif
+                            @endforeach
+                        
                         </tr>
-                    @endforeach
+                        @endforeach
                     
                 </tbody>
+
             </table>
         </div>
     </div>

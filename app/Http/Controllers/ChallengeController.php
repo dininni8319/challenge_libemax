@@ -46,7 +46,7 @@ class ChallengeController extends Controller
         
         $diffTimeMinutes = diffTime(sliceTime($employeesEnter, -5, 2), sliceTime($employeesExit, -5, 2), 0);
         
-        
+        //create a collection with total hours
         for ($i = 0; $i < sizeof($diffTimeHours); $i++) { 
                 $collection = collect();
                 $stringTimeH = $diffTimeHours[$i] < 10 ? '0' . strval($diffTimeHours[$i])  . ':' : strval($diffTimeHours[$i])  . ':';
@@ -68,6 +68,9 @@ class ChallengeController extends Controller
         }
 
         $uniqueUserStamp = array_unique($uniqueUserStamp);
+
+        //Here we are going to store the employees daily worked hours
+        
         
         return view('home', compact('employees', 'employeesEnter', 'employeesExit', 'stamps', 'diffTimeHours', 'diffTimeMinutes','uniqueUserStamp'));
     }
